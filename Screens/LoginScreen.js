@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react"
 import {
-    Button,
     ImageBackground,
     Keyboard,
     KeyboardAvoidingView,
@@ -17,7 +16,7 @@ import * as SplashScreen from 'expo-splash-screen';
  
 SplashScreen.preventAutoHideAsync()
 
-export const LoginScreen = () => {
+export const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isShowKeyboard, setIsShowKeyboard] = useState(false)
@@ -47,6 +46,7 @@ export const LoginScreen = () => {
         keyboardHide();
         setEmail('');
         setPassword('');
+        navigation.navigate('Home', {email: regData.email})
     };
 
     const imageBgnd = require('../assets/images/PhotoBG.jpg')
@@ -84,7 +84,7 @@ export const LoginScreen = () => {
                                 <Text>Sign in</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.btnSec} activeOpacity={0.8}>
-                                <Text style={styles.descrBtnSec}>Don't have an account? Register</Text>
+                                <Text style={styles.descrBtnSec} onPress={() => navigation.navigate('Registration')}>Don't have an account? Register</Text>
                             </TouchableOpacity>
                         </KeyboardAvoidingView>
                     </View>
@@ -114,17 +114,13 @@ const styles = StyleSheet.create({
     },
     titleForm: {
         fontFamily: "Roboto-Medium",
-        // fontStyle: normal,
-        // fontWeight: 500,
         fontSize: 30,
        marginBottom: 16,
         lineHeight: 35,
         textAlign: "center",
-        // letterSpacing: "0.01em",
         color: "#212121",
     },
     input: {
-        // width: 200,
         height: 50,
         padding: 16,
         borderWidth: 1,

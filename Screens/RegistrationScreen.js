@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react"
 import {
-    Button,
     ImageBackground,
     Keyboard,
     KeyboardAvoidingView,
@@ -17,15 +16,7 @@ import * as SplashScreen from 'expo-splash-screen';
  
 SplashScreen.preventAutoHideAsync()
 
-
-// const loadFonts = async () => {
-//   await Font.loadAsync({
-//     "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
-//     "Roboto-Bold": require("../assets/fonts/Roboto/Roboto-Bold.ttf"),
-//   });
-// };
-
-export const RegistrationScreen = () => {
+export const RegistrationScreen = ({navigation}) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,7 +25,6 @@ export const RegistrationScreen = () => {
         "Roboto-Medium": require("../assets/fonts/Roboto/Roboto-Medium.ttf"),
         "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
     });
-    // const [isReady, setIsReady] = useState(false);
 
     const onLoyoutRootView = useCallback(async () => {
         if (fontsLoaded) {
@@ -60,13 +50,10 @@ export const RegistrationScreen = () => {
         setName('');
         setEmail('');
         setPassword('');
+        navigation.navigate('Home', {email:regData.email})
     };
 
     const imageBgnd = require('../assets/images/PhotoBG.jpg')
-
-    // if (!isReady) {
-    //     return <AppLoading startAsync={loadFonts} onFinish={() => setIsReady(true)}/>
-    // }
 
     if (!fontsLoaded) {
         return null;
@@ -76,12 +63,10 @@ export const RegistrationScreen = () => {
         <TouchableWithoutFeedback onPress={keyboardHide}>
         <View style={styles.externalBox}>
             <ImageBackground source={imageBgnd} resizeMode="cover" style={styles.image}>
-                    {/* <View style={styles.form}> */}
                     <View style={{...styles.form, paddingBottom: isShowKeyboard ? 5 :80}} onLayout={onLoyoutRootView}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS == "ios" ? "padding" : "height"}
                         >
-                        
                         <Text style={styles.titleForm}>Registration</Text>
                         <TextInput
                             placeholder="Name"
@@ -105,16 +90,14 @@ export const RegistrationScreen = () => {
                             secureTextEntry={true}
                             onFocus={() => {setIsShowKeyboard(true)}}
                         />
-                        {/* <Button title={"Sign up"} style={styles.input} onPress={onSignUp} /> */}
                             <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onSignUp}>
                                 <Text>Sign up</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.btnSec} activeOpacity={0.8}>
-                                <Text style={styles.descrBtnSec}>Already have an account?  Login</Text>
+                                <Text style={styles.descrBtnSec} onPress={() => navigation.navigate('Login')}>Already have an account?  Login</Text>
                             </TouchableOpacity>
                     </KeyboardAvoidingView>
             </View>
-            
                 </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
@@ -141,17 +124,13 @@ const styles = StyleSheet.create({
     },
     titleForm: {
         fontFamily: "Roboto-Medium",
-        // fontStyle: normal,
-        // fontWeight: 500,
         fontSize: 30,
        marginBottom: 16,
         lineHeight: 35,
         textAlign: "center",
-        // letterSpacing: "0.01em",
         color: "#212121",
     },
     input: {
-        // width: 200,
         height: 50,
         padding: 16,
         borderWidth: 1,
@@ -181,4 +160,5 @@ const styles = StyleSheet.create({
         color: "#1B4371",
         lineHeight: 19,
     },
-})
+});
+
