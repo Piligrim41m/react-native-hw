@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import React, { useCallback, useState } from "react"
 import {
     ImageBackground,
     Keyboard,
@@ -13,17 +13,19 @@ import {
 } from "react-native";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../redux/auth/authOperations";
  
 SplashScreen.preventAutoHideAsync()
 
-export const RegistrationScreen = ({navigation}) => {
-    const [name, setName] = useState('');
+export const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isShowKeyboard, setIsShowKeyboard] = useState(false)
+    const dispatch = useDispatch()
     const [fontsLoaded] = Font.useFonts({
-        "Roboto-Medium": require("../assets/fonts/Roboto/Roboto-Medium.ttf"),
-        "Roboto-Regular": require("../assets/fonts/Roboto/Roboto-Regular.ttf"),
+        "Roboto-Medium": require("../../assets/fonts/Roboto/Roboto-Medium.ttf"),
+        "Roboto-Regular": require("../../assets/fonts/Roboto/Roboto-Regular.ttf"),
     });
 
     const onLoyoutRootView = useCallback(async () => {
@@ -32,28 +34,26 @@ export const RegistrationScreen = ({navigation}) => {
         }
     }, [fontsLoaded]);
 
-    const handlerName = (text) => setName(text);
     const handlerEmail = (text) => setEmail(text);
     const handlerPassword = (text) => setPassword(text);
     const keyboardHide = () => {
         Keyboard.dismiss();
         setIsShowKeyboard(false);
     }
-    const onSignUp = () => {
+    const onSignIn = () => {
         const regData = {
-            name: name,
             email: email,
             password: password,
         };
         console.log(regData);
+        dispatch(authSignInUser(regData))
         keyboardHide();
-        setName('');
         setEmail('');
         setPassword('');
-        navigation.navigate('Home', {email:regData.email})
+        // navigation.navigate('Home', {email: regData.email})
     };
 
-    const imageBgnd = require('../assets/images/PhotoBG.jpg')
+    const imageBgnd = require('../../assets/images/PhotoBG.jpg')
 
     if (!fontsLoaded) {
         return null;
@@ -61,43 +61,37 @@ export const RegistrationScreen = ({navigation}) => {
 
     return (
         <TouchableWithoutFeedback onPress={keyboardHide}>
-        <View style={styles.externalBox}>
-            <ImageBackground source={imageBgnd} resizeMode="cover" style={styles.image}>
+            <View style={styles.externalBox}>
+                <ImageBackground source={imageBgnd} resizeMode="cover" style={styles.image}>
                     <View style={{...styles.form, paddingBottom: isShowKeyboard ? 5 :80}} onLayout={onLoyoutRootView}>
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS == "ios" ? "padding" : "height"}
-                        >
-                        <Text style={styles.titleForm}>Registration</Text>
-                        <TextInput
-                            placeholder="Name"
-                            value={name}
-                            onChangeText={handlerName}
+                        <KeyboardAvoidingView
+                            behavior={Platform.OS == "ios" ? "padding" : "height"}
+                            >
+                            
+                            <Text style={styles.titleForm}>Login</Text>
+                            <TextInput
+                                placeholder="Email"
+                                value={email}
+                                onChangeText={handlerEmail}
                                 style={styles.input}
                                 onFocus={() => {setIsShowKeyboard(true)}}
-                        />
-                        <TextInput
-                            placeholder="Email"
-                            value={email}
-                            onChangeText={handlerEmail}
-                            style={styles.input}
-                            onFocus={() => {setIsShowKeyboard(true)}}
-                        />
-                        <TextInput
-                            placeholder="Password"
-                            value={password}
-                            onChangeText={handlerPassword}
-                            style={styles.input}
-                            secureTextEntry={true}
-                            onFocus={() => {setIsShowKeyboard(true)}}
-                        />
-                            <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onSignUp}>
-                                <Text>Sign up</Text>
+                            />
+                            <TextInput
+                                placeholder="Password"
+                                value={password}
+                                onChangeText={handlerPassword}
+                                style={styles.input}
+                                secureTextEntry={true}
+                                onFocus={() => {setIsShowKeyboard(true)}}
+                            />
+                            <TouchableOpacity style={styles.btn} activeOpacity={0.8} onPress={onSignIn}>
+                                <Text>Sign in</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.btnSec} activeOpacity={0.8}>
-                                <Text style={styles.descrBtnSec} onPress={() => navigation.navigate('Login')}>Already have an account?  Login</Text>
+                                <Text style={styles.descrBtnSec} onPress={() => navigation.navigate('Registration')}>Don't have an account? Register</Text>
                             </TouchableOpacity>
-                    </KeyboardAvoidingView>
-            </View>
+                        </KeyboardAvoidingView>
+                    </View>
                 </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
@@ -160,5 +154,4 @@ const styles = StyleSheet.create({
         color: "#1B4371",
         lineHeight: 19,
     },
-});
-
+})

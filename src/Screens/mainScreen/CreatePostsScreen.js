@@ -1,9 +1,15 @@
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 import { Camera, CameraType } from "expo-camera";
-import { useEffect, useState } from "react";
 import * as MediaLibrary from 'expo-media-library';
-import { Entypo } from '@expo/vector-icons'; 
 import * as Location from 'expo-location';
+import { Entypo } from '@expo/vector-icons'; 
+import { db } from "../../firabase/config";
+import "firebase/storage";
+import 'firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 
 
 const CreatePostsScreen = ({navigation}) => {
@@ -11,66 +17,82 @@ const CreatePostsScreen = ({navigation}) => {
     const [terrain, setTerrain] = useState('')
     const [postTitle, setPostTitle] = useState('')
     const [camera, setCamera] = useState(null)
-    const [photo, setPhoto] = useState('')
+    const [photo, setPhoto] = useState(null)
     const [hasPermission, setHasPermission] = useState(null);
-    const [location, setLocation] = useState({})
-    // const [permission, requestPermission] = Camera.useCameraPermissions();
-    // console.log('----PREMISSION----', permission)
-    // console.log('----PREMISSION----', permission.granted)
-    console.log('----PHOTO----', photo)
-    // console.log('---REQUESTPREMISSION---', requestPermission)
-
-    console.log('---------->', hasPermission)
+    const [location, setLocation] = useState(null)
+    
+    const {nickName, userId} = useSelector(state => state.auth)
+    
+    const storage = getStorage();
+    
     const toggleCameraType = () => {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back))
     }
 
+    const handlerTerrain = (text) => setTerrain(text);
+    const handlerPostTitle = (text) => setPostTitle(text);
+
     const takePhoto = async () => {
         const { uri } = await camera.takePictureAsync()
-        const takeLocation = await Location.getCurrentPositionAsync()
-        // setLocation(async () => await Location.getCurrentPositionAsync())
-        console.log('--location-latitude--', takeLocation.coords.latitude)
-        console.log('--location-longitude--', takeLocation.coords.longitude)
         console.log('camera--------->', uri)
         setPhoto(uri);
-        setLocation(prevState => takeLocation.coords)
-        console.log('---LOCATION---', location)
     }
 
-    const sendPhoto = () => {
-        console.log('navigation', navigation)
-        navigation.navigate('DefaultScreen', { photo, postTitle, location, terrain })
-        // setPhoto('');
+    const uploadPhotoToServer = async () => {
+        const response = await fetch(`${photo}`);
+        const file = await response.blob();
+        const unicuePostId = Date.now().toString();
+        const imageRef = await ref(storage, `postImage/${unicuePostId}`);
+        await uploadBytes(imageRef, file);
+        return await getDownloadURL(imageRef);
+    }
+
+    const sendPost = async () => {
+        const unicuePostId = Date.now().toString();
+        const photo = await uploadPhotoToServer()
+        await setDoc(doc(db, 'posts', `${unicuePostId}`), {
+            photo: photo,
+            location: location,
+            headers: {postTitle, terrain},
+            login: nickName,
+            userId: userId,
+            commentsCount: 0,
+        })
+
         setPostTitle('');
         setTerrain('');
-        setHasPermission(null)
-        setLocation(null)
+        setPhoto(null);
+        setLocation(null);
+
+        navigation.navigate('DefaultScreen', {unicuePostId})
+        
     }
 
-    const handlerPostTitle = (text) => setPostTitle(text);
-    const handlerTerrain = (text) => setTerrain(text);
-    
+
     useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-        // await Camera.getCameraPermissionsAsync();
-        // await Camera.requestCameraPermissionsAsync();
+        (async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
         await MediaLibrary.requestPermissionsAsync();
-        await Location.requestForegroundPermissionsAsync();
 
-      setHasPermission(status === "granted");
+        setHasPermission(status === "granted");
         })();
-  }, [hasPermission]);
 
-//     useEffect(() => {
-//     (async () => {
-//       let { status } = await Location.requestForegroundPermissionsAsync();
-//       if (status !== 'granted') {
-//         setErrorMsg('Permission to access location was denied');
-//         return;
-//       }
-//     })();
-//   }, []);
+        (async () => {
+            let {status} = await Location.requestForegroundPermissionsAsync();
+            if (status !== "granted") {
+                console.log("Permission to access location was denied");
+                alert("Permission to access location was denied")
+            }
+            let locationData = await Location.getCurrentPositionAsync({});
+            const coords = {
+                latitude: locationData.coords.latitude,
+                longitude: locationData.coords.longitude,
+            };
+
+            await setLocation(coords);
+        })();
+    }, []);
+
 
   if (hasPermission === null) {
     return <View />;
@@ -78,19 +100,6 @@ const CreatePostsScreen = ({navigation}) => {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-// if (!permission) {
-//     // Camera permissions are still loading
-//     return <View />;
-//   }
-
-//     if (!permission.granted) {
-//       return (
-//       <View style={styles.container}>
-//         <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-//         <Button onPress={requestPermission} title="grant permission" />
-//       </View>
-//     );
-//   }
     return (
         <View style={styles.container}>
             <Camera style={styles.camera} ref={setCamera} type={type}>
@@ -120,7 +129,7 @@ const CreatePostsScreen = ({navigation}) => {
 
             </View>
             <View>
-                <TouchableOpacity style={styles.btnPublish} onPress={sendPhoto}>
+                <TouchableOpacity style={styles.btnPublish} onPress={sendPost}>
                     <Text style={styles.btnPublishText}>PUBLISH</Text>
                 </TouchableOpacity>
             </View>
@@ -130,8 +139,6 @@ const CreatePostsScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
     },
     camera: {
         height: 240,

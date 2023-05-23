@@ -1,31 +1,25 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { store } from './src/redux/store';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
-import { LoginScreen } from './Screens/LoginScreen';
-import { RegistrationScreen } from './Screens/RegistrationScreen';
-import HomeScreen from './Screens/Home';
-
-const MainStack = createStackNavigator();
+import Main from './src/components/Main';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    "Roboto-Medium": require("./assets/fonts/Roboto/Roboto-Medium.ttf"),
+    "Roboto-Regular": require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
+  });
+  
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <NavigationContainer>
-      <MainStack.Navigator initialRouteName='Login'>
-        <MainStack.Screen options={{ headerShown: false }} name='Registration' component={RegistrationScreen} />
-        <MainStack.Screen options={{ headerShown: false }} name='Login' component={LoginScreen} />
-        <MainStack.Screen options={{ headerShown: false }} name='Home' component={HomeScreen} />
-      </MainStack.Navigator>
+    <Provider store={store}>
+      <Main />
       <StatusBar style="auto" />
-    </NavigationContainer>
+    </Provider>
+    
   );
 }
-
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
