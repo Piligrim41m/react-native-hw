@@ -1,0 +1,4 @@
+GET http://api.weatherbit.io/v2.0/current?lat=48.458189&lon=35.0306551&key=161b71ae33f348868722ad1c9f0e1796
+Accept: application/json
+
+###

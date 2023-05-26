@@ -1,0 +1,190 @@
+import {StyleSheet} from "react-native";
+
+export const styles = StyleSheet.create({
+    regInputs: {
+        display: 'flex',
+        position: "relative",
+        height: "80%",
+        minWidth: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "white",
+    },
+
+    textPosition: {
+        display: 'flex',
+        paddingBottom: 40,
+    },
+
+    input: {
+        width: 300,
+        height: 50,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "grey",
+        borderRadius: 5,
+        marginBottom: 10,
+
+    },
+
+    postInput: {
+        width: 300,
+        height: 30,
+        padding: 3,
+        borderBottomWidth: 1,
+        borderBottomColor: "lightgrey",
+        marginTop: 10,
+
+    },
+
+    button: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 300,
+        height: 50,
+        padding: 10,
+        borderColor: "grey",
+        borderRadius: 100,
+        marginBottom: 10,
+        backgroundColor: '#FF6C00',
+
+    },
+
+    postButton: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 300,
+        height: 50,
+        padding: 10,
+        borderColor: "grey",
+        borderRadius: 100,
+        marginBottom: 10,
+        backgroundColor: '#F6F6F6',
+        marginTop: 20,
+
+    },
+
+    avatarPlace: {
+        display: "flex",
+        minHeight: 120,
+        minWidth: 120,
+        position: "absolute",
+        top: -120,
+        borderRadius: 16,
+        backgroundColor: '#F6F6F6',
+    },
+
+    add: {
+        display: 'flex',
+        position: "absolute",
+        minHeight: 25,
+        minWidth: 25,
+        borderRadius: 100,
+        color: 'blue',
+        top: -50,
+        right: '39%',
+    },
+
+    createPostMain: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: 'white',
+        alignItems: 'center',
+    },
+
+    createPostCamera: {
+        flex: 1,
+        minWidth: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    createPostPhoto: {
+        backgroundColor: '#F6F6F6',
+        width: 300,
+        height: 400,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+    },
+
+    makePhotoButton: {
+        alignContent: 'center',
+        backgroundColor: 'white',
+        width: 60,
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 50,
+    },
+
+    retakePhotoButton: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: 50,
+        height: 50,
+        padding: 10,
+        borderColor: "grey",
+        borderRadius: 100,
+        marginBottom: 10,
+        backgroundColor: '#F6F6F6',
+        marginTop: 20,
+
+    },
+
+    postsMain: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: 'white',
+    },
+
+    postsOwnerSection: {
+        flexDirection: 'row',
+        paddingBottom: 10,
+    },
+
+    postsProfileText: {
+        justifyContent: 'center',
+        paddingLeft: 20
+    },
+
+    postSection: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        justifyContent: 'flex-start',
+        maxHeight: 255,
+        maxWidth: '100%',
+    },
+
+    postImage: {
+        // flex: 1,
+        // alignSelf: "flex-end",
+        // marginTop: 'auto',
+        minWidth: 187,
+        maxHeight: 250,
+        borderRadius: 8
+    },
+
+    postText: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: 'white',
+        justifyContent: 'space-between',
+    },
+
+    mapMain: {
+        flex: 1,
+        backgroundColor: "#fff",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    mapView: {
+        width: '100%', height: '100%',
+    }
+
+});

@@ -2,6 +2,7 @@
   "expo": {
     "name": "react-native-hw",
     "slug": "react-native-hw",
+    "description": "This in educational app by React Native",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
