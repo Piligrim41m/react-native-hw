@@ -1,0 +1,1 @@
+export { CreatePostsScreen } from "./CreatePostsScreen"

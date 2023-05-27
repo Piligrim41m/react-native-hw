@@ -1,25 +1,24 @@
-import React from 'react';
 import { Provider } from 'react-redux';
-import { store } from './src/redux/store';
+import { store } from './redux/store';
 import { useFonts } from 'expo-font';
-import { StatusBar } from 'expo-status-bar';
-import Main from './src/components/Main';
+import { Main } from './src/components/Main';
+import { LoaderScreen } from './src/Screens/LoaderScreen';
 
-export default function App() {
+export const App = () => {
   const [fontsLoaded] = useFonts({
-    "Roboto-Medium": require("./assets/fonts/Roboto/Roboto-Medium.ttf"),
-    "Roboto-Regular": require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
+    'Roboto-Italic': require('./src/fonts/Roboto/Roboto-Italic.ttf'),
+    'Roboto-Regular': require('./src/fonts/Roboto/Roboto-Regular.ttf'),
   });
-  
+
   if (!fontsLoaded) {
-    return null;
+    return <LoaderScreen />;
   }
 
   return (
     <Provider store={store}>
       <Main />
-      <StatusBar style="auto" />
     </Provider>
-    
   );
-}
+};
+
+export default App;
